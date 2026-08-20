@@ -13,9 +13,9 @@ function AdminLogin() {
 
     // Demo Admin Login
     if (
-      email === "admin@shopora.com" &&
-      password === "admin123"
-    ) {
+      email === "biyaarooj@gmail.com" &&
+      password === "ishmal@123"
+) {
       localStorage.setItem("adminLoggedIn", "true");
 
       alert("Admin login successful!");
