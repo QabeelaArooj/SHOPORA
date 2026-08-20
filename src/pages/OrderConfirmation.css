@@ -1,0 +1,84 @@
+.confirmation-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f5f7fb;
+  padding: 20px;
+}
+
+.confirmation-box {
+  width: 100%;
+  max-width: 550px;
+  background: white;
+  padding: 45px;
+  text-align: center;
+  border-radius: 18px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+}
+
+.success-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #22c55e;
+  color: white;
+  border-radius: 50%;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.confirmation-box h1 {
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.confirmation-box > p {
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+.order-info {
+  text-align: left;
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+}
+
+.order-info p {
+  margin: 10px 0;
+}
+
+.confirmation-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.shop-btn,
+.home-btn {
+  flex: 1;
+  padding: 13px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.shop-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.home-btn {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+@media (max-width: 600px) {
+  .confirmation-buttons {
+    flex-direction: column;
+  }
+}
