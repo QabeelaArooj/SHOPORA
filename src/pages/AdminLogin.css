@@ -1,0 +1,97 @@
+.admin-login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: #f5f7fb;
+}
+
+.admin-login-box {
+  width: 100%;
+  max-width: 430px;
+  padding: 40px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.admin-login-icon {
+  text-align: center;
+  font-size: 45px;
+  margin-bottom: 15px;
+}
+
+.admin-login-label {
+  text-align: center;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.admin-login-box h1 {
+  text-align: center;
+  margin: 8px 0;
+  color: #111827;
+}
+
+.admin-login-text {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+.admin-login-box form {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-login-box label {
+  margin-bottom: 7px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.admin-login-box input {
+  padding: 13px;
+  margin-bottom: 18px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.admin-login-box input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.admin-login-box form button {
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-login-box form button:hover {
+  background: #1d4ed8;
+}
+
+.admin-back-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-back-btn:hover {
+  background: #f3f4f6;
+}

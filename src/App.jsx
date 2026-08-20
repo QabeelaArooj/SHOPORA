@@ -12,6 +12,7 @@ import Signup from "./pages/Signup";
 import Checkout from "./pages/Checkout";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin-login"element={<AdminLogin />}/>
       </Routes>
     </BrowserRouter>
   );
