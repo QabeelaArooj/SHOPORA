@@ -1,194 +1,76 @@
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // =========================
+  // URL PARAMETERS
+  // =========================
+
   const categoryFromURL =
     searchParams.get("category") || "All Products";
+
+  const searchFromURL =
+    searchParams.get("search") || "";
+
+  // =========================
+  // STATES
+  // =========================
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [selectedCategory, setSelectedCategory] =
     useState(categoryFromURL);
 
-  const [selectedPrices, setSelectedPrices] = useState([]);
+  const [selectedPrices, setSelectedPrices] =
+    useState([]);
 
-  const [searchTerm, setSearchTerm] = useState(
-    searchParams.get("search") || ""
-  );
+  const [searchTerm, setSearchTerm] =
+    useState(searchFromURL);
 
   // =========================
-  // PRODUCTS
+  // FETCH PRODUCTS
   // =========================
 
-  const products = [
-    {
-      id: 1,
-      name: "Wireless Headphones",
-      category: "Electronics",
-      price: 49.99,
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 2,
-      name: "Smart Watch",
-      category: "Electronics",
-      price: 79.99,
-      image:
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 3,
-      name: "Bluetooth Speaker",
-      category: "Electronics",
-      price: 34.99,
-      image:
-        "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 4,
-      name: "Mechanical Keyboard",
-      category: "Electronics",
-      price: 69.99,
-      image:
-        "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 5,
-      name: "Wireless Mouse",
-      category: "Electronics",
-      price: 24.99,
-      image:
-        "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=600&q=80",
-    },
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-    {
-      id: 6,
-      name: "Classic Sneakers",
-      category: "Fashion",
-      price: 59.99,
-      image:
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 7,
-      name: "Cotton T-Shirt",
-      category: "Fashion",
-      price: 19.99,
-      image:
-        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 8,
-      name: "Denim Jeans",
-      category: "Fashion",
-      price: 44.99,
-      image:
-        "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 9,
-      name: "Travel Backpack",
-      category: "Fashion",
-      price: 39.99,
-      image:
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80",
-    },
+        const response = await fetch(
+          "http://localhost:5000/api/products"
+        );
 
-    {
-      id: 10,
-      name: "Modern Table Lamp",
-      category: "Home & Kitchen",
-      price: 29.99,
-      image:
-        "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 11,
-      name: "Coffee Maker",
-      category: "Home & Kitchen",
-      price: 89.99,
-      image:
-        "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 12,
-      name: "Non-Stick Frying Pan",
-      category: "Home & Kitchen",
-      price: 32.99,
-      image:
-        "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=600&q=80",
-    },
+        if (!response.ok) {
+          throw new Error(
+            `Server error: ${response.status}`
+          );
+        }
 
-    {
-      id: 13,
-      name: "Skin Care Set",
-      category: "Beauty",
-      price: 24.99,
-      image:
-        "https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 14,
-      name: "Luxury Perfume",
-      category: "Beauty",
-      price: 54.99,
-      image:
-        "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 15,
-      name: "Makeup Kit",
-      category: "Beauty",
-      price: 39.99,
-      image:
-        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=80",
-    },
+        const data = await response.json();
 
-    {
-      id: 16,
-      name: "Kids Toy Set",
-      category: "Kids",
-      price: 19.99,
-      image:
-        "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 17,
-      name: "Building Blocks",
-      category: "Kids",
-      price: 22.99,
-      image:
-        "https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 18,
-      name: "Kids School Backpack",
-      category: "Kids",
-      price: 27.99,
-      image:
-        "https://images.unsplash.com/photo-1577733966973-d680bffd2e80?auto=format&fit=crop&w=600&q=80",
-    },
+        setProducts(data);
+      } catch (error) {
+        console.error(
+          "Products fetch error:",
+          error
+        );
 
-    {
-      id: 19,
-      name: "Breakfast Cereal",
-      category: "Grocery",
-      price: 8.99,
-      image:
-        "https://images.unsplash.com/photo-1517093157656-b9eccef91cb1?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: 20,
-      name: "Cooking Oil",
-      category: "Grocery",
-      price: 12.99,
-      image:
-        "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80",
-    },
-  ];
+        setError(
+          "Unable to load products. Please make sure the backend server is running."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // =========================
   // CATEGORIES
@@ -295,22 +177,27 @@ function Products() {
 
   const handleAddToCart = (product) => {
     const existingCart =
-      JSON.parse(localStorage.getItem("cart")) || [];
+      JSON.parse(
+        localStorage.getItem("cart")
+      ) || [];
 
-    const existingProduct = existingCart.find(
-      (item) => item.id === product.id
-    );
+    const existingProduct =
+      existingCart.find(
+        (item) => item._id === product._id
+      );
 
     let updatedCart;
 
     if (existingProduct) {
-      updatedCart = existingCart.map((item) =>
-        item.id === product.id
-          ? {
-              ...item,
-              quantity: (item.quantity || 1) + 1,
-            }
-          : item
+      updatedCart = existingCart.map(
+        (item) =>
+          item._id === product._id
+            ? {
+                ...item,
+                quantity:
+                  (item.quantity || 1) + 1,
+              }
+            : item
       );
     } else {
       updatedCart = [
@@ -331,7 +218,9 @@ function Products() {
       new Event("cartUpdated")
     );
 
-    alert(`${product.name} added to cart!`);
+    alert(
+      `${product.name} added to cart!`
+    );
   };
 
   // =========================
@@ -340,35 +229,109 @@ function Products() {
 
   let filteredProducts = [...products];
 
-  if (selectedCategory !== "All Products") {
-    filteredProducts = filteredProducts.filter(
-      (product) =>
-        product.category === selectedCategory
-    );
+  // Category filter
+  if (
+    selectedCategory !==
+    "All Products"
+  ) {
+    filteredProducts =
+      filteredProducts.filter(
+        (product) =>
+          product.category ===
+          selectedCategory
+      );
   }
 
+  // Search filter
   if (searchTerm.trim() !== "") {
-    filteredProducts = filteredProducts.filter(
-      (product) =>
-        `${product.name} ${product.category}`
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
+    filteredProducts =
+      filteredProducts.filter(
+        (product) =>
+          `${product.name} ${product.category} ${product.description || ""}`
+            .toLowerCase()
+            .includes(
+              searchTerm.toLowerCase()
+            )
+      );
+  }
+
+  // Price filter
+  if (selectedPrices.length > 0) {
+    filteredProducts =
+      filteredProducts.filter(
+        (product) =>
+          selectedPrices.some(
+            (selectedPrice) => {
+              const range =
+                priceRanges.find(
+                  (price) =>
+                    price.label ===
+                    selectedPrice
+                );
+
+              return (
+                product.price >=
+                  range.min &&
+                product.price <=
+                  range.max
+              );
+            }
+          )
+      );
+  }
+
+  // =========================
+  // LOADING STATE
+  // =========================
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+
+        <section className="products-page">
+          <div className="no-products">
+            <h3>
+              Loading products...
+            </h3>
+
+            <p>
+              Please wait while we load
+              products from the database.
+            </p>
+          </div>
+        </section>
+      </>
     );
   }
 
-  if (selectedPrices.length > 0) {
-    filteredProducts = filteredProducts.filter(
-      (product) =>
-        selectedPrices.some((selectedPrice) => {
-          const range = priceRanges.find(
-            (price) => price.label === selectedPrice
-          );
+  // =========================
+  // ERROR STATE
+  // =========================
 
-          return (
-            product.price >= range.min &&
-            product.price <= range.max
-          );
-        })
+  if (error) {
+    return (
+      <>
+        <Navbar />
+
+        <section className="products-page">
+          <div className="no-products">
+            <h3>
+              Unable to Load Products
+            </h3>
+
+            <p>{error}</p>
+
+            <button
+              onClick={() =>
+                window.location.reload()
+              }
+            >
+              Try Again
+            </button>
+          </div>
+        </section>
+      </>
     );
   }
 
@@ -381,18 +344,30 @@ function Products() {
       <Navbar />
 
       <section className="products-page">
+
+        {/* =========================
+            HEADER
+        ========================= */}
+
         <div className="products-header">
+
           <p className="section-label">
             SHOP OUR COLLECTION
           </p>
 
-          <h1>{selectedCategory}</h1>
+          <h1>
+            {selectedCategory}
+          </h1>
 
           <p>
-            Discover products selected especially for you.
+            Discover products selected
+            especially for you.
           </p>
 
+          {/* SEARCH */}
+
           <div className="products-search">
+
             <input
               type="text"
               placeholder="Search products..."
@@ -400,103 +375,175 @@ function Products() {
               onChange={handleSearch}
             />
 
-            <span>🔍</span>
+            <span>
+              🔍
+            </span>
+
           </div>
+
         </div>
+
+        {/* =========================
+            PRODUCTS LAYOUT
+        ========================= */}
 
         <div className="products-layout">
 
-          {/* SIDEBAR */}
+          {/* =========================
+              SIDEBAR
+          ========================= */}
 
           <aside className="products-sidebar">
-            <h3>Categories</h3>
 
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={
-                  selectedCategory === category
-                    ? "active-category"
-                    : ""
-                }
-                onClick={() =>
-                  handleCategoryChange(category)
-                }
-              >
-                {category}
-              </button>
-            ))}
+            <h3>
+              Categories
+            </h3>
+
+            {categories.map(
+              (category) => (
+                <button
+                  key={category}
+                  className={
+                    selectedCategory ===
+                    category
+                      ? "active-category"
+                      : ""
+                  }
+                  onClick={() =>
+                    handleCategoryChange(
+                      category
+                    )
+                  }
+                >
+                  {category}
+                </button>
+              )
+            )}
 
             <h3 className="price-heading">
               Price Range
             </h3>
 
-            {priceRanges.map((range) => (
-              <label key={range.label}>
-                <input
-                  type="checkbox"
-                  checked={selectedPrices.includes(
-                    range.label
-                  )}
-                  onChange={() =>
-                    handlePriceChange(range.label)
-                  }
-                />
+            {priceRanges.map(
+              (range) => (
+                <label
+                  key={range.label}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedPrices.includes(
+                      range.label
+                    )}
+                    onChange={() =>
+                      handlePriceChange(
+                        range.label
+                      )
+                    }
+                  />
 
-                {" "}
-                {range.label}
-              </label>
-            ))}
+                  {" "}
+                  {range.label}
+                </label>
+              )
+            )}
+
           </aside>
 
-          {/* PRODUCTS */}
+          {/* =========================
+              PRODUCTS
+          ========================= */}
 
           <div className="products-grid">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <div
-                  className="product-card"
-                  key={product.id}
-                >
-                  <div className="product-image">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                    />
-                  </div>
 
-                  <div className="product-info">
-                    <p>{product.category}</p>
+            {filteredProducts.length >
+            0 ? (
+              filteredProducts.map(
+                (product) => (
+                  <div
+                    className="product-card"
+                    key={product._id}
+                  >
 
-                    <h3>{product.name}</h3>
+                    {/* IMAGE */}
 
-                    <div className="product-bottom">
-                      <strong>
-                        ${product.price.toFixed(2)}
-                      </strong>
+                    <div className="product-image">
 
-                      <button
-                        onClick={() =>
-                          handleAddToCart(product)
-                        }
-                      >
-                        Add to Cart
-                      </button>
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        onError={(e) => {
+                          e.target.src =
+                            "https://via.placeholder.com/600x400?text=No+Image";
+                        }}
+                      />
+
                     </div>
+
+                    {/* INFO */}
+
+                    <div className="product-info">
+
+                      <p>
+                        {product.category}
+                      </p>
+
+                      <h3>
+                        {product.name}
+                      </h3>
+
+                      {product.description && (
+                        <small>
+                          {product.description}
+                        </small>
+                      )}
+
+                      <div className="product-bottom">
+
+                        <strong>
+                          $
+                          {Number(
+                            product.price
+                          ).toFixed(2)}
+                        </strong>
+
+                        <button
+                          onClick={() =>
+                            handleAddToCart(
+                              product
+                            )
+                          }
+                        >
+                          Add to Cart
+                        </button>
+
+                      </div>
+
+                    </div>
+
                   </div>
-                </div>
-              ))
+                )
+              )
             ) : (
               <div className="no-products">
-                <h3>No products found</h3>
+
+                <h3>
+                  No products found
+                </h3>
 
                 <p>
-                  Try searching for another product.
+                  Try searching for
+                  another product or
+                  select a different
+                  category.
                 </p>
+
               </div>
             )}
+
           </div>
+
         </div>
+
       </section>
     </>
   );

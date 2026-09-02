@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import emailjs from "@emailjs/browser";
 import "./Checkout.css";
 
 function Checkout() {
@@ -15,7 +16,9 @@ function Checkout() {
     payment: "Cash on Delivery",
   });
 
-  // Get cart from localStorage
+  const [sending, setSending] = useState(false);
+
+  // Get cart
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
   // Calculate subtotal
@@ -28,10 +31,10 @@ function Checkout() {
   // Delivery charges
   const delivery = subtotal > 0 ? 200 : 0;
 
-  // Final total
+  // Total
   const total = subtotal + delivery;
 
-  // Handle input changes
+  // Handle input
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -40,55 +43,124 @@ function Checkout() {
   };
 
   // Place order
-  const handleOrder = (e) => {
+  const handleOrder = async (e) => {
     e.preventDefault();
 
-    // Check cart
     if (cart.length === 0) {
       alert("Your cart is empty!");
       navigate("/products");
       return;
     }
 
-    // Create order
-    const order = {
-      orderId:
-        "SHOP-" + Math.floor(100000 + Math.random() * 900000),
+    try {
+      setSending(true);
 
-      customer: formData,
+      const orderId =
+        "SHOP-" +
+        Math.floor(100000 + Math.random() * 900000);
 
-      products: cart,
+      const order = {
+        orderId,
+        customer: formData,
+        products: cart,
+        subtotal,
+        delivery,
+        total,
+        orderDate: new Date().toLocaleString(),
+        status: "Pending",
+      };
 
-      subtotal: subtotal,
+      // =========================
+      // SAVE ORDER
+      // =========================
 
-      delivery: delivery,
+      localStorage.setItem(
+        "order",
+        JSON.stringify(order)
+      );
 
-      total: total,
+      // =========================
+      // PRODUCTS LIST FOR EMAIL
+      // =========================
 
-      orderDate: new Date().toLocaleString(),
+      const productsList = cart
+        .map(
+          (item) =>
+            `${item.name} x ${
+              item.quantity || 1
+            } = $${(
+              Number(item.price) *
+              (item.quantity || 1)
+            ).toFixed(2)}`
+        )
+        .join("\n");
 
-      status: "Pending",
-    };
+      // =========================
+      // EMAILJS VARIABLES
+      // =========================
 
-    // Save order
-    localStorage.setItem(
-      "order",
-      JSON.stringify(order)
-    );
+      const templateParams = {
+        order_id: orderId,
 
-    // Empty cart
-    localStorage.removeItem("cart");
+        customer_name: formData.name,
+        customer_email: formData.email,
+        customer_phone: formData.phone,
 
-    // Update Navbar cart count
-    window.dispatchEvent(
-      new Event("cartUpdated")
-    );
+        customer_address: formData.address,
+        customer_city: formData.city,
+        customer_postal_code:
+          formData.postalCode,
 
-    // Success message
-    alert("Order placed successfully!");
+        payment_method: formData.payment,
 
-    // Go to confirmation page
-    navigate("/order-confirmation");
+        products: productsList,
+
+        subtotal: subtotal.toFixed(2),
+        delivery: delivery.toFixed(2),
+        total: total.toFixed(2),
+
+        order_date: new Date().toLocaleString(),
+
+        status: "Pending",
+      };
+
+      // =========================
+      // SEND EMAIL
+      // =========================
+
+      await emailjs.send(
+        "service_zyr2ijs",
+        "template_hotajge",
+        templateParams,
+        "zmFhMks2xbIbwqC5o"
+      );
+
+      // Empty cart
+      localStorage.removeItem("cart");
+
+      // Update navbar cart
+      window.dispatchEvent(
+        new Event("cartUpdated")
+      );
+
+      alert(
+        "Order placed successfully! 📧\nAdmin has been notified by email."
+      );
+
+      navigate("/order-confirmation");
+
+    } catch (error) {
+      console.error(
+        "EmailJS / Order Error:",
+        error
+      );
+
+      alert(
+        "Order could not be completed.\nPlease check EmailJS settings and try again."
+      );
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -196,8 +268,13 @@ function Checkout() {
 
             {/* PLACE ORDER */}
 
-            <button type="submit">
-              Place Order
+            <button
+              type="submit"
+              disabled={sending}
+            >
+              {sending
+                ? "Placing Order..."
+                : "Place Order"}
             </button>
 
           </form>
@@ -215,14 +292,15 @@ function Checkout() {
           {cart.length === 0 ? (
             <p>Your cart is empty.</p>
           ) : (
-            cart.map((item) => (
+            cart.map((item, index) => (
               <div
                 className="summary-item"
-                key={item.id}
+                key={item.id || index}
               >
 
                 <span>
-                  {item.name} × {item.quantity || 1}
+                  {item.name} ×{" "}
+                  {item.quantity || 1}
                 </span>
 
                 <span>
